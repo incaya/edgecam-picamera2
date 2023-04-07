@@ -13,16 +13,33 @@ from threading import Condition
 from picamera2 import Picamera2
 from picamera2.encoders import JpegEncoder
 from picamera2.outputs import FileOutput
+from libcamera import controls
 
 PAGE = """\
 <html>
-<head>
-<title>picamera2 MJPEG streaming demo</title>
-</head>
-<body>
-<h1>Picamera2 MJPEG Streaming Demo</h1>
-<img src="stream.mjpg" width="640" height="480" />
-</body>
+    <head>
+        <title>EdgeCam Picamera2</title>
+    </head>
+    <body>
+        <h1>EdgeCam Picamera2</h1>
+        <img src="stream.mjpg" width="640" height="480" />
+        <form>
+            <button onClick="window.autofocus_plus()">[ Autofocus + ]</button>&nbsp;
+            <button onClick="window.autofocus_minus()">[ Autofocus - ]</button> 
+        </form>
+    </body>
+    <script>
+    function autofocus_plus() {
+        var reqParams = { method: 'GET'};
+        var req = new Request('/autofocus-plus',reqParams);
+        fetch(req, reqParams);
+    }
+    function autofocus_minus() {
+        var reqParams = { method: 'GET'};
+        var req = new Request('/autofocus-minus',reqParams);
+        fetch(req, reqParams);
+    }
+    </script>
 </html>
 """
 
@@ -73,6 +90,15 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                 logging.warning(
                     'Removed streaming client %s: %s',
                     self.client_address, str(e))
+        elif self.path == '/autofocus-plus':
+            nextLensPos = picam2.camera_controls.LensPosition + 0.1
+            picam2.set_controls({"LensPosition": nextLensPos})
+            self.send_response(200)
+        elif self.path == '/autofocus-minus':
+            nextLensPos = picam2.camera_controls.LensPosition - 0.1
+            picam2.set_controls({"LensPosition": nextLensPos})
+            self.send_response(200)
+            
         else:
             self.send_error(404)
             self.end_headers()
@@ -85,6 +111,7 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
 
 picam2 = Picamera2()
 picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
+picam2.set_controls({"AfMode": controls.AfModeEnum.Manual, "LensPosition": 0.0})
 output = StreamingOutput()
 picam2.start_recording(JpegEncoder(), FileOutput(output))
 
