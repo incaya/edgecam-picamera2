@@ -23,10 +23,10 @@ PAGE = """\
     <body>
         <h1>EdgeCam Picamera2</h1>
         <img src="stream.mjpg" width="640" height="480" />
-        <form>
+        <div>
             <button onClick="window.autofocus_plus()">[ Autofocus + ]</button>&nbsp;
             <button onClick="window.autofocus_minus()">[ Autofocus - ]</button> 
-        </form>
+        </div>
     </body>
     <script>
     function autofocus_plus() {
