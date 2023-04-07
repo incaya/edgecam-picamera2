@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-# Mostly copied from https://picamera.readthedocs.io/en/release-1.13/recipes2.html
 # Run this script, then point a web browser at http:<this-ip-address>:8000
 # Note: needs simplejpeg to be installed (pip3 install simplejpeg).
 
@@ -15,6 +14,7 @@ from picamera2.encoders import JpegEncoder
 from picamera2.outputs import FileOutput
 from libcamera import controls
 
+# index html page
 PAGE = """\
 <html>
     <head>
@@ -54,7 +54,7 @@ class StreamingOutput(io.BufferedIOBase):
             self.frame = buf
             self.condition.notify_all()
 
-
+# backend / API
 class StreamingHandler(server.BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/':
