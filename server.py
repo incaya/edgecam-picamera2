@@ -91,11 +91,11 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     'Removed streaming client %s: %s',
                     self.client_address, str(e))
         elif self.path == '/autofocus-plus':
-            nextLensPos = picam2.camera_controls.LensPosition + 0.1
+            nextLensPos = picam2.camera_controls['LensPosition'] + 0.1
             picam2.set_controls({"LensPosition": nextLensPos})
             self.send_response(200)
         elif self.path == '/autofocus-minus':
-            nextLensPos = picam2.camera_controls.LensPosition - 0.1
+            nextLensPos = picam2.camera_controls['LensPosition'] - 0.1
             picam2.set_controls({"LensPosition": nextLensPos})
             self.send_response(200)
             
