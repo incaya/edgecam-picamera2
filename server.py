@@ -92,12 +92,13 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     self.client_address, str(e))
         elif self.path == '/autofocus-plus':
             print("Lens pos: ", picam2.camera_controls['LensPosition'])
-            nextLensPos = float(picam2.camera_controls['LensPosition']) + 0.1
-            picam2.set_controls({"LensPosition": nextLensPos})
+            #nextLensPos = float(picam2.camera_controls['LensPosition']) + 0.1
+            picam2.set_controls({"LensPosition": 5})
             self.send_response(200)
         elif self.path == '/autofocus-minus':
-            nextLensPos = float(picam2.camera_controls['LensPosition']) - 0.1
-            picam2.set_controls({"LensPosition": nextLensPos})
+            print("Lens pos: ", picam2.camera_controls['LensPosition'])
+            #nextLensPos = float(picam2.camera_controls['LensPosition']) - 0.1
+            picam2.set_controls({"LensPosition": 0})
             self.send_response(200)
             
         else:
